@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">  
-    <title>台灣緣起 - 聊天</title>
+    <title>Destiny Chat - Chat</title>
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
@@ -23,12 +23,18 @@
             text-align: center; 
             flex-shrink: 0; 
         }
+        .chat-background {
+            flex: 1;
+            width: 100%;
+            background-color: #E6E6FA;
+            display: flex;
+            justify-content: center;
+            overflow-y: auto;
+        }
         #chat { 
-            max-width: 500px; /* 設定最大寬度 */
-            width: 100%; /* 確保在小螢幕上仍能適應 */
-            margin: 0 auto 10px auto; /* 上下間距保持原樣，左右自動居中 */         
-            flex: 1; 
-            align-self: center; /* 在 flex 容器中水平居中 */
+            max-width: 500px; 
+            width: 100%; 
+            margin: 0 0 10px 0;
             overflow-y: auto; 
             border: 1px solid #ccc; 
             padding: 20px; 
@@ -36,12 +42,11 @@
             background-color: #E6E6FA; 
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
-            margin: 0 20px 10px 20px; 
             box-sizing: border-box; 
             display: flex; 
             flex-direction: column; 
             justify-content: flex-end;
-            min-height: 0; /* 避免 flex 容器高度異常 */  
+            min-height: 0; 
         }
         #message { 
             width: 100%; 
@@ -57,7 +62,7 @@
             box-sizing: border-box; 
             background-color: #E6E6FA; 
             text-align: right; 
-            font-family: 'Noto Sans TC', 'Arial', sans-serif; /* 優雅字體 */
+            font-family: 'Noto Sans TC', 'Arial', sans-serif; 
         }
         button { 
             width: 160px; 
@@ -116,7 +121,7 @@
             color: white; 
         }
         .other { 
-            background-color: #e9967a; /* 柔和暗珊瑚色 */
+            background-color: #e9967a; 
             color: white; 
             padding: 8px 12px; 
             border-radius: 10px; 
@@ -134,8 +139,8 @@
             margin: 10px 0; 
         }
         .system.large { 
-            font-size: 18px; /* 加大字體 */
-            color: #666; /* 稍微加深顏色以提升可讀性 */
+            font-size: 18px; 
+            color: #666; 
         }
         .typing { 
             text-align: left; 
@@ -151,14 +156,8 @@
             margin: 10px; 
             flex-shrink: 0; 
         }
-        .input-container {
-            max-width: 700px; /* 與聊天室寬度一致 */
-            width: 100%;
-            margin: 0 auto; /* 居中 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 5px; 
+        .input-background {
+            width: 100%; 
             background-color: #E6E6FA; 
             border-top: 1px solid #ccc;
             position: fixed;
@@ -166,6 +165,16 @@
             left: 0;
             right: 0;
             z-index: 10;
+        }
+        .input-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 5px; 
+            background-color: transparent; 
         }
         .option-container {
             text-align: center;
@@ -186,24 +195,24 @@
                 margin: 0 5px; 
             }
             button {
-                width: 70px; /* 增加寬度 */
-                height: 50px; /* 明確設定高度，與桌面版區分 */
+                width: 70px; 
+                height: 50px; 
                 padding: 8px 0;
-                font-size: 16px; /* 字體放大，保持可讀性 */
-                min-width: 70px; /* 確保觸控區域足夠大 */   
+                font-size: 16px; 
+                min-width: 70px; 
             }
             #sendButton {
-                width: 70px; /* 明確指定傳送按鈕寬度 */
+                width: 70px; 
                 height: 50px; 
-                font-size: 16px; /* 與其他按鈕一致 */
+                font-size: 16px; 
             }
             #leaveButton {
-                width: 70px; /* 保持一致性 */
-                height: 50px;
-                font-size: 16px;
+                width: 70px; 
+                height: 50px; 
+                font-size: 16px; 
             }
             .input-container {
-                padding: 10px 5px; /* 確保輸入區域不過於擁擠 */
+                padding: 10px 5px; 
             }
             .option-container {
                 display: none; 
@@ -212,30 +221,35 @@
     </style>
 </head>
 <body>
-    <h1>台灣緣起</h1>
-    <div class="tip">應用可能需要幾秒喚醒，請稍候...</div>
-    <div class="tip">請保持頁面活躍以接收訊息，離開畫面可能錯過訊息。</div>
-    <div id="chat"></div>
+    <h1>Destiny Chat</h1>
+    <div class="tip">The app may take a few seconds to wake up, please wait...</div>
+    <div class="tip">Keep the page active to receive messages; leaving the screen may cause you to miss messages.</div>
+    <div class="chat-background">
+        <div id="chat"></div>
+    </div>
     <div class="option-container">
         <label>
             <input type="checkbox" id="altEnterMode" onchange="toggleAltEnterMode()">
-            使用 Alt + Enter 傳送，Enter 換行（僅限電腦端）
+            Use Alt + Enter to send, Enter to add a new line (desktop only)
         </label>
     </div>
-    <div class="input-container">
-        <button id="leaveButton" onclick="confirmLeaveChat()">離開</button>
-        <textarea id="message"></textarea>
-        <button id="sendButton" onclick="sendMessage()">傳送</button>
+    <div class="input-background">
+        <div class="input-container">
+            <button id="leaveButton" onclick="confirmLeaveChat()">Leave</button>
+            <textarea id="message"></textarea>
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const targetGender = sessionStorage.getItem('targetGender');
         const chatRoom = sessionStorage.getItem('chatRoom');
-        console.log('檢查 sessionStorage - targetGender:', targetGender, 'chatRoom:', chatRoom);
-        if (!targetGender || !chatRoom) {
-            console.log('未找到 targetGender 或 chatRoom，跳轉回 index.html');
-            alert('請先選擇聊天對象性別！');
+        const userId = sessionStorage.getItem('userId');
+        console.log('Checking sessionStorage - targetGender:', targetGender, 'chatRoom:', chatRoom, 'userId:', userId);
+        if (!targetGender || !chatRoom || !userId) {
+            console.log('targetGender, chatRoom, or userId not found, redirecting to index.html');
+            alert('Please select the gender of your chat partner first!');
             window.location.href = '/index.html';
         } else {
             const socket = io(window.location.origin, {
@@ -249,7 +263,7 @@
             const messageInput = document.getElementById('message');
             const altEnterModeCheckbox = document.getElementById('altEnterMode');
             let typingMessage = null;
-            let partnerHasLeft = false; // 追蹤對方是否已離開
+            let partnerHasLeft = false;
 
             const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const savedAltEnterMode = localStorage.getItem('altEnterMode') === 'true';
@@ -258,9 +272,9 @@
 
             function updateInputMode() {
                 if (isMobile) {
-                    messageInput.placeholder = '直接按輸入傳送';
+                    messageInput.placeholder = 'Press Enter to send';
                 } else {
-                    messageInput.placeholder = altEnterModeCheckbox.checked ? '按 Alt + Enter 傳送' : '按 Enter 傳送';
+                    messageInput.placeholder = altEnterModeCheckbox.checked ? 'Press Alt + Enter to send' : 'Press Enter to send';
                 }
             }
 
@@ -270,34 +284,36 @@
             }
 
             socket.on('connect', () => {
-                console.log('Socket.IO 連線成功，socket.id:', socket.id);
+                console.log('Socket.IO connection successful, socket.id:', socket.id);
+                socket.emit('setUserId', userId);
                 if (chatRoom) {
-                    socket.emit('joinRoom', chatRoom);
-                    appendSystemMessage('開始聊天吧');
+                    socket.emit('joinRoom', { room: chatRoom, userId });
+                    appendSystemMessage("Let's start chatting!");
                 }
             });
 
             socket.on('reconnect', (attemptNumber) => {
-                console.log('重新連線成功，嘗試次數:', attemptNumber);
+                console.log('Reconnection successful, attempt number:', attemptNumber);
+                socket.emit('setUserId', userId);
                 if (chatRoom) {
-                    socket.emit('joinRoom', chatRoom);
-                    appendSystemMessage('已重新連接到伺服器！');
+                    socket.emit('joinRoom', { room: chatRoom, userId });
+                    appendSystemMessage('Reconnected to the server!');
                 }
             });
 
             socket.on('reconnect_failed', () => {
-                console.log('重新連線失敗');
-                appendSystemMessage('無法連接到伺服器，請檢查網路！');
+                console.log('Reconnection failed');
+                appendSystemMessage('Unable to connect to the server, please check your network!');
             });
 
             socket.on('message', (data) => {
-                console.log('收到訊息:', data);
+                console.log('Received message:', data);
                 const messageContainer = document.createElement('div');
                 messageContainer.classList.add('message-container');
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
 
-                if (data.user === socket.id) {
+                if (data.user === userId) {
                     messageContainer.classList.add('self-container');
                     messageDiv.classList.add('self');
                 } else {
@@ -313,34 +329,34 @@
                 messageDiv.textContent = data.text;
                 messageContainer.appendChild(messageDiv);
                 chat.appendChild(messageContainer);
-                chat.scrollTop = chat.scrollHeight;
+                chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
             });
 
             socket.on('partnerLeft', () => {
-                console.log('收到 partnerLeft 事件');
-                partnerHasLeft = true; // 標記對方已離開
-                appendSystemMessage('對方已離開聊天。點擊這裡返回上一頁：<a href="/index.html">返回</a> 或按離開', true);
+                console.log('Received partnerLeft event');
+                partnerHasLeft = true;
+                appendSystemMessage('The other person has left the chat. Click here to return to the previous page: <a href="/index.html">Return</a> or press Leave', true);
             });
 
             socket.on('error', (msg) => {
-                console.log('收到 error 事件:', msg);
+                console.log('Received error event:', msg);
                 alert(msg);
                 window.location.href = '/index.html';
             });
 
             socket.on('typing', () => {
-                console.log('對方正在輸入...');
-                if (!typingMessage && !partnerHasLeft) { // 只有在對方未離開時顯示
+                console.log('The other person is typing...');
+                if (!typingMessage && !partnerHasLeft) {
                     typingMessage = document.createElement('div');
                     typingMessage.classList.add('typing');
-                    typingMessage.textContent = '對方正在輸入...';
+                    typingMessage.textContent = 'The other person is typing...';
                     chat.appendChild(typingMessage);
-                    chat.scrollTop = chat.scrollHeight;
+                    chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
                 }
             });
 
             socket.on('stopTyping', () => {
-                console.log('對方停止輸入');
+                console.log('The other person stopped typing');
                 if (typingMessage) {
                     chat.removeChild(typingMessage);
                     typingMessage = null;
@@ -349,7 +365,7 @@
 
             let typingTimeout;
             messageInput.addEventListener('input', () => {
-                if (!partnerHasLeft) { // 只有在對方未離開時發送
+                if (!partnerHasLeft) {
                     socket.emit('typing');
                     clearTimeout(typingTimeout);
                     typingTimeout = setTimeout(() => {
@@ -381,29 +397,29 @@
 
             function sendMessage() {
                 const msg = messageInput.value.trim();
-                if (msg && !partnerHasLeft) { // 只有在對方未離開時發送
-                    console.log('發送訊息:', msg);
+                if (msg && !partnerHasLeft) {
+                    console.log('Sending message:', msg);
                     socket.emit('message', msg);
                     messageInput.value = '';
                     socket.emit('stopTyping');
-                    chat.scrollTop = chat.scrollHeight;
+                    chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
                 }
             }
 
             function confirmLeaveChat() {
-                console.log('點擊離開按鈕');
+                console.log('Clicked the Leave button');
                 if (partnerHasLeft) {
-                    // 對方已離開，直接返回
                     socket.emit('leaveChat');
                     sessionStorage.removeItem('targetGender');
                     sessionStorage.removeItem('chatRoom');
+                    sessionStorage.removeItem('userId');
                     window.location.href = '/index.html';
                 } else {
-                    // 對方未離開，顯示確認提示
-                    if (confirm('確定要離開聊天嗎？')) {
+                    if (confirm('Are you sure you want to leave the chat?')) {
                         socket.emit('leaveChat');
                         sessionStorage.removeItem('targetGender');
                         sessionStorage.removeItem('chatRoom');
+                        sessionStorage.removeItem('userId');
                         window.location.href = '/index.html';
                     }
                 }
@@ -413,20 +429,20 @@
                 const systemDiv = document.createElement('div');
                 systemDiv.classList.add('system');
                 if (largeFont) {
-                    systemDiv.classList.add('large'); // 加大字體
+                    systemDiv.classList.add('large');
                 }
-                systemDiv.innerHTML = msg; // 使用 innerHTML 以支援超連結
+                systemDiv.innerHTML = msg;
                 chat.appendChild(systemDiv);
-                chat.scrollTop = chat.scrollHeight;
+                chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
             }
 
-            // 確保離開時通知對方（關閉頁面或刷新）
             window.addEventListener('unload', () => {
-                if (!partnerHasLeft) { // 只有在對方未離開時通知
+                if (!partnerHasLeft) {
                     socket.emit('leaveChat');
                 }
                 sessionStorage.removeItem('targetGender');
                 sessionStorage.removeItem('chatRoom');
+                sessionStorage.removeItem('userId');
             });
         }
     </script>

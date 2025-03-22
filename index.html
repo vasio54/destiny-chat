@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>緣起 - 選擇聊天對象</title>
+    <title>Destiny Chat - Select Chat Partner</title>
     <style>
         body { 
             font-family: 'Arial', sans-serif; 
@@ -56,7 +56,7 @@
             transform: scale(0.95); 
         }
         #cancelButton {
-            background-color: #f44336; /* 紅色取消按鈕 */
+            background-color: #f44336;
         }
         #cancelButton:hover {
             background-color: #d32f2f;
@@ -87,7 +87,7 @@
             text-decoration: underline; 
         }
         .hidden {
-            display: none; /* 用於隱藏元素 */
+            display: none;
         }
         @media (max-width: 600px) {
             h1 {
@@ -114,26 +114,28 @@
     </style>
 </head>
 <body>
-    <h1>緣起</h1>
-    <div class="slogan">立即開聊，匿名又簡單！</div>
-    <div class="tip">應用可能需要幾秒喚醒，請稍候...</div>
+    <h1>Destiny Chat</h1>
+    <div class="slogan">Start chatting now, anonymous and simple!</div>
+    <div class="tip">The app may take a few seconds to wake up, please wait...</div>
     <div id="selectionArea">
-        <label for="gender">我想聊天對象的性別</label>
+        <label for="gender">I want to chat with someone of this gender</label>
         <select id="gender">
-            <option value="">請選擇</option>
-            <option value="female">女</option>
-            <option value="male">男</option>
+            <option value="">Please select</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
         </select>
-        <button id="startButton" onclick="startChat()">開始聊天</button>
+        <button id="startButton" onclick="startChat()">Start Chat</button>
     </div>
-    <div class="tip">選擇性別後，點擊「開始聊天」以尋找聊天對象。</div>
+    <div class="tip">After selecting a gender, click "Start Chat" to find a chat partner.</div>
     <div id="status"></div>
     <div class="contact">
-        <a href="mailto:vasio54@gmail.com">聯絡站長</a>
+        <a href="mailto:vasio54@gmail.com">Contact Admin</a>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // 生成一個隨機的 userId
+        const userId = Math.random().toString(36).substring(2, 15);
         const socket = io(window.location.origin, {
             reconnection: true,
             reconnectionAttempts: Infinity,
@@ -148,26 +150,30 @@
         let isMatching = false;
         let cancelButton = null;
 
+        // 設置 userId
+        socket.on('connect', () => {
+            socket.emit('setUserId', userId);
+        });
+
         function startChat() {
             const targetGender = genderSelect.value;
             if (!targetGender) {
-                alert('請選擇要聊天的對象性別！');
+                alert('Please select the gender of your chat partner!');
                 return;
             }
             sessionStorage.setItem('targetGender', targetGender);
-            socket.emit('startMatching', { targetGender });
-            statusDiv.textContent = '正在配對中...';
+            sessionStorage.setItem('userId', userId);
+            socket.emit('startMatching', { targetGender, userId });
+            statusDiv.textContent = 'Matching...';
             startButton.disabled = true;
             isMatching = true;
 
-            // 隱藏選擇區域
             selectionArea.classList.add('hidden');
 
-            // 創建並顯示「取消等待」按鈕
             if (!cancelButton) {
                 cancelButton = document.createElement('button');
                 cancelButton.id = 'cancelButton';
-                cancelButton.textContent = '取消等待';
+                cancelButton.textContent = 'Cancel Waiting';
                 cancelButton.onclick = cancelWaiting;
                 document.body.insertBefore(cancelButton, statusDiv);
             }
@@ -176,16 +182,15 @@
 
         function cancelWaiting() {
             socket.emit('stopMatching');
-            statusDiv.textContent = '已取消配對';
+            statusDiv.textContent = 'Matching canceled';
             isMatching = false;
             sessionStorage.clear();
 
-            // 隱藏取消按鈕並恢復選擇區域
             cancelButton.classList.add('hidden');
             selectionArea.classList.remove('hidden');
             startButton.disabled = false;
             setTimeout(() => {
-                statusDiv.textContent = ''; // 清空狀態訊息
+                statusDiv.textContent = '';
             }, 1000);
         }
 
@@ -194,10 +199,10 @@
         });
 
         socket.on('matchSuccess', (data) => {
-            console.log('配對成功，房間:', data.room);
+            console.log('Match successful, room:', data.room);
             sessionStorage.setItem('chatRoom', data.room);
             isMatching = false;
-            if (cancelButton) cancelButton.classList.add('hidden'); // 隱藏取消按鈕
+            if (cancelButton) cancelButton.classList.add('hidden');
             window.location.href = '/chat.html';
         });
 
@@ -212,7 +217,8 @@
         });
 
         socket.on('reconnect', (attemptNumber) => {
-            statusDiv.textContent = '已重新連接到伺服器！';
+            statusDiv.textContent = 'Reconnected to the server!';
+            socket.emit('setUserId', userId);
             if (!isMatching) {
                 startButton.disabled = false;
                 selectionArea.classList.remove('hidden');
@@ -221,7 +227,7 @@
         });
 
         socket.on('reconnect_failed', () => {
-            statusDiv.textContent = '無法連接到伺服器，請檢查網路！';
+            statusDiv.textContent = 'Unable to connect to the server, please check your network!';
             startButton.disabled = false;
             isMatching = false;
             sessionStorage.clear();
@@ -233,7 +239,7 @@
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden && isMatching) {
                     socket.emit('stopMatching');
-                    statusDiv.textContent = '已取消配對';
+                    statusDiv.textContent = 'Matching canceled';
                     startButton.disabled = false;
                     isMatching = false;
                     sessionStorage.clear();
