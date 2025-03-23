@@ -14,12 +14,14 @@
             height: 100vh; 
             margin: 0; 
             background-color: #E6E6FA;
+            text-align: center; /* 添加後備置中 */
         }
         h1 { 
             margin-bottom: 10px; 
             font-size: 36px; 
             color: #333; 
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
+            text-align: center; /* 明確指定置中 */
         }
         .slogan {
             font-size: 18px;
@@ -65,6 +67,7 @@
             margin-top: 20px; 
             font-size: 18px; 
             color: #555; 
+            text-align: center; /* 確保狀態文字置中 */
         }
         .tip { 
             text-align: center; 
@@ -90,11 +93,20 @@
             display: none;
         }
         @media (max-width: 600px) {
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center; /* 確保全局文字置中 */
+            }
             h1 {
                 font-size: 28px;
+                text-align: center; /* 確保標題置中 */
             }
             .slogan {
                 font-size: 16px;
+                text-align: center; /* 已有，保留確認 */
             }
             #gender {
                 width: 100px;
@@ -106,9 +118,15 @@
             }
             .tip {
                 font-size: 12px;
+                text-align: center; /* 已有，保留確認 */
             }
             .contact {
                 font-size: 12px;
+                text-align: center; /* 確保聯繫信息置中 */
+            }
+            #status {
+                font-size: 16px; /* 稍微減小以適應手機 */
+                text-align: center; /* 確保狀態文字置中 */
             }
         }
     </style>
@@ -120,7 +138,6 @@
     <div id="selectionArea">
         <label for="gender">I want to chat with someone of this gender</label>
         <select id="gender">
-            <option value="">Please select</option>
             <option value="female">Female</option>
             <option value="male">Male</option>
         </select>
